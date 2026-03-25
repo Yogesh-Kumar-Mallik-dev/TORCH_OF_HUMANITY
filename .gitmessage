@@ -1,0 +1,143 @@
+Branch : <branch-name>
+
+
+# =========================================================
+# PRE-COMMIT WORKFLOW (MANDATORY)
+#
+# 1. Create/Update documentation in docs/*
+#    - Docs MUST follow the SAME TREE STRUCTURE as the root project
+#    - Every relevant code change must be reflected in docs
+#    - Systems, features, fixes → all must be documented
+#
+# 2. Stage changes
+#    git add .
+#
+# 3. Write commit using this template
+#    git commit
+#
+# ❗ Code without documentation is incomplete
+# ❗ If using AI, THINK AT LEAST 3 TIMES before committing
+#    - Validate correctness
+#    - Validate structure
+#    - Validate impact
+# =========================================================
+
+
+# =========================================================
+# STRUCTURE DEFINITIONS (IMPORTANT)
+#
+# PREFIX → ACTION performed
+#   (what you DID)
+#
+# TAG → CATEGORY / DISTRIBUTION of change
+#   (what TYPE of change it is)
+#
+# SCOPE → AREA of the project affected
+#   (WHERE the change happened)
+#
+# ❗ TAG ≠ SCOPE
+# TAG = classification
+# SCOPE = specific system/module/component
+# =========================================================
+
+
+# ===================== ALLOWED PREFIX ====================
+# CREATED → New system/module created
+# ADDED   → New feature or capability added
+# FIXED   → Bug or incorrect behavior fixed
+# UPDATED → Modification/improvement to existing code
+# CLOSED  → Completed task/issue
+# OPENED  → Started task/issue
+# =========================================================
+
+
+# ====================== ALLOWED TAGS ======================
+# [CORE]      → Base systems / architecture
+# [FEATURE]   → New functionality
+# [REFACTOR]  → Code restructuring (no behavior change)
+# [BUG]       → Bug fixes
+# [PERF]      → Performance improvements
+# [UX]        → User/player experience improvements
+# [STATE]     → State management / flow logic
+# [INPUT]     → Input handling systems
+# [UI]        → Interface / HUD / menus
+# =========================================================
+
+
+# =========================================================
+# COMMIT BLOCK RULES
+#
+# - Multiple commit blocks are ALLOWED and ENCOURAGED
+# - Each block must represent ONE logical change/system
+# - Do NOT mix unrelated changes in a single block
+# - Use additional blocks for clarity instead of cramming
+# =========================================================
+
+
+# ===================== COMMIT BLOCK ======================
+<PREFIX> [TAG]: <Scope / Title>
+
+- What changed
+- Why it changed
+- Key implementation notes
+
+Impact:
+- Expected effect / future benefit / system influence
+# ========================================================
+
+
+# ===================== COMMIT BLOCK ======================
+<PREFIX> [TAG]: <Scope / Title>
+
+- What changed
+- Why it changed
+- Key implementation notes
+
+Impact:
+- Expected effect / future benefit / system influence
+# ========================================================
+
+
+# (Add more blocks if needed)
+
+
+# ====================== MERGE FORMAT =====================
+# MERGE: (<source-branch>) --> {<target-branch>}
+# ========================================================
+
+
+Author: Yogesh-Kumar-Mallik-dev
+
+
+# ======================= EXAMPLE =========================
+# Branch : movement-system
+#
+# CREATED [CORE]: Movement Component
+#
+# - Built velocity-based movement system
+# - Integrated with entity update loop
+#
+# Impact:
+# - Foundation for all movement-related features
+#
+#
+# ADDED [FEATURE]: Dash Mechanic
+#
+# - Added velocity multiplier for dash
+# - Prepared cooldown hook integration
+#
+# Impact:
+# - Enables fast-paced movement and combat mobility
+#
+#
+# FIXED [BUG]: Movement Speed Overflow
+#
+# - Fixed issue where velocity exceeded max limit
+# - Added clamping logic
+#
+# Impact:
+# - Prevents unintended speed exploits
+#
+#
+# Author: Yogesh-Kumar-Mallik-dev
+# ========================================================
