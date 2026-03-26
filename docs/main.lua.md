@@ -1,10 +1,16 @@
 # main.lua
 
-Status: scaffold file created.
+Status: runtime bootstrap wired.
 
 ## Summary
-- File exists as project entry placeholder.
-- Runtime bootstrap logic is not implemented yet.
+- Added LÖVE entry wiring to `core.game`.
+- Implemented lifecycle callbacks:
+	- `love.load()` -> `Game:load()`
+	- `love.update(dt)` -> `Game:update(dt)`
+	- `love.draw()` -> `Game:draw()`
+- Routed input callbacks to game input subsystem:
+	- `love.keypressed(key)` -> `Game.input:keypressed(key)`
+	- `love.keyreleased(key)` -> `Game.input:keyreleased(key)`
 
 ## Impact
-- Establishes the expected root entry point for upcoming game loop wiring.
+- Activates game loop and input dispatch through the core game module.

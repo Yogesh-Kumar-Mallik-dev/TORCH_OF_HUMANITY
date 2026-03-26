@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local anim8 = {
   _VERSION     = 'anim8 v2.3.1',
   _DESCRIPTION = 'An animation library for LÖVE',

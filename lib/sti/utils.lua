@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- Some utility functions that shouldn't be exposed.
 local utils = {}
 

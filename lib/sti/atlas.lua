@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 ---- Texture atlas complement for the Simple Tiled Implementation
 -- @copyright 2022
 -- @author Eduardo Hernández coz.eduardo.hernandez@gmail.com

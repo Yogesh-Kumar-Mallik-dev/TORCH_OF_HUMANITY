@@ -419,6 +419,7 @@ local function getInfoAboutItemsTouchedBySegment(self, x1,y1, x2,y2, filter)
       -- the sorting is according to the t of an infinite line, not the segment
       tii0,tii1    = rect_getSegmentIntersectionIndices(l,t,w,h, x1,y1, x2,y2, -math.huge, math.huge)
       itemInfoLen  = itemInfoLen + 1
+---@diagnostic disable-next-line: param-type-mismatch
       itemInfo[itemInfoLen] = {item = item, ti1 = ti1, ti2 = ti2, weight = min(tii0,tii1)}
       end
     end
