@@ -103,6 +103,15 @@ Impact:
 
 # ====================== MERGE FORMAT =====================
 # MERGE: (<source-branch>) --> {<target-branch>}
+#
+# MERGE NOTES (REQUIRED FOR MERGE COMMITS):
+# - Major features brought into target branch
+# - Key systems/modules included in this merge
+# - Any important behavior or architecture impact
+#
+# SOURCE BRANCH POLICY:
+# - Do NOT delete source branch after merge
+# - Merge must preserve source branch history and availability
 # ========================================================
 
 
