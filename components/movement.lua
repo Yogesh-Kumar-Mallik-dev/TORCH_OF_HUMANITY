@@ -6,26 +6,31 @@ local Movement = {}
 Movement.__index = Movement
 
 -- ========================
+-- EASING FUNCTION
+-- ========================
+local function ease_out_cubic_inverse(t)
+  return (1 - t) ^ 3
+end
+
+-- ========================
 -- Constructor
 -- ========================
 function Movement.new(config)
   local self = setmetatable({}, Movement)
 
-  --  USE CONFIG DIRECTLY
   self.max_speed   = config.max_speed
   self.acceleration = config.acceleration
   self.friction     = config.friction
 
-  -- Dash config
-  self.dash_speed    = self.max_speed * 2.5
-  self.dash_time     = 0.15
+  -- Dash
+  self.dash_speed    = config.dash_speed
+  self.dash_distance = config.dash_distance
   self.dash_cooldown = 0.5
 
-  -- Dash state
-  self.dashing    = false
-  self.dash_timer = 0
-  self.cooldown   = 0
-  self.dash_dir   = Vector2.new(0, 0)
+  self.dashing = false
+  self.cooldown = 0
+  self.dash_dir = Vector2.new(0, 0)
+  self.dash_traveled = 0
 
   -- Control states
   self.control = {
@@ -61,7 +66,7 @@ function Movement:apply_knockback(dir, force, duration)
 end
 
 -- ========================
--- Input Direction (8-way)
+-- Input Direction
 -- ========================
 function Movement:get_input_direction(input)
   local up    = input:is_action_pressed("move_up")
@@ -94,7 +99,6 @@ function Movement:update(entity, input, dt)
   -- ========================
   -- CONTROL PRIORITY
   -- ========================
-
   if self.control.frozen or self.control.stunned then
     entity.velocity = Vector2.new(0, 0)
     self.facing_signal:emit(self,
@@ -123,7 +127,7 @@ function Movement:update(entity, input, dt)
     return
   end
 
-  -- Dash cooldown
+  -- Cooldown
   if self.cooldown > 0 then
     self.cooldown = self.cooldown - dt
   end
@@ -131,8 +135,8 @@ function Movement:update(entity, input, dt)
   -- Dash trigger
   if input:is_action_just_pressed("dash") and self.cooldown <= 0 then
     self.dashing = true
-    self.dash_timer = self.dash_time
     self.cooldown = self.dash_cooldown
+    self.dash_traveled = 0
 
     if not dir:is_zero() then
       self.dash_dir = dir
@@ -145,55 +149,74 @@ function Movement:update(entity, input, dt)
   local state = "idle"
 
   -- ========================
-  -- DASH
+  -- DASH (distance + easing)
   -- ========================
   if self.dashing then
     state = "dashing"
 
-    self.dash_timer = self.dash_timer - dt
-    entity.velocity = self.dash_dir * self.dash_speed
+    local t = self.dash_traveled / self.dash_distance
+    t = math.min(t, 1)
 
-    if self.dash_timer <= 0 then
+    local speed_factor = ease_out_cubic_inverse(t)
+    local current_speed = self.dash_speed * speed_factor
+
+    -- optional minimum speed (prevents sticky end)
+    local min_speed = self.dash_speed * 0.2
+    current_speed = math.max(current_speed, min_speed)
+
+    local movement = self.dash_dir * current_speed * dt
+    local distance_step = movement:length()
+
+    entity.velocity = self.dash_dir * current_speed
+    entity.position = entity.position + movement
+
+    self.dash_traveled = self.dash_traveled + distance_step
+
+    if self.dash_traveled >= self.dash_distance then
       self.dashing = false
+      self.dash_traveled = 0
     end
 
+    local facing = Direction.from_vector(entity.velocity)
+    entity.facing = facing
+
+    self.facing_signal:emit(self, state, facing)
+    return
+  end
+
+  -- ========================
+  -- NORMAL MOVEMENT
+  -- ========================
+  if not dir:is_zero() then
+    state = "moving"
+
+    local target_velocity = dir * self.max_speed
+    local delta = target_velocity - entity.velocity
+    local accel_step = self.acceleration * dt
+
+    if delta:length() > accel_step then
+      delta = delta:normalized() * accel_step
+    end
+
+    entity.velocity = entity.velocity + delta
+
   else
-    -- ========================
-    -- NORMAL MOVEMENT
-    -- ========================
-    if not dir:is_zero() then
-      state = "moving"
+    local speed = entity.velocity:length()
 
-      local target_velocity = dir * self.max_speed
-      local delta = target_velocity - entity.velocity
-      local accel_step = self.acceleration * dt
+    if speed > 0 then
+      local drop = self.friction * dt
+      speed = math.max(speed - drop, 0)
 
-      if delta:length() > accel_step then
-        delta = delta:normalized() * accel_step
-      end
-
-      entity.velocity = entity.velocity + delta
-
-    else
-      local speed = entity.velocity:length()
-
-      if speed > 0 then
-        local drop = self.friction * dt
-        speed = math.max(speed - drop, 0)
-
-        if speed == 0 then
-          entity.velocity = Vector2.new(0, 0)
-        else
-          entity.velocity = entity.velocity:normalized() * speed
-        end
+      if speed == 0 then
+        entity.velocity = Vector2.new(0, 0)
+      else
+        entity.velocity = entity.velocity:normalized() * speed
       end
     end
   end
 
   -- Clamp
-  if not self.dashing then
-    entity.velocity = entity.velocity:clamped(self.max_speed)
-  end
+  entity.velocity = entity.velocity:clamped(self.max_speed)
 
   -- Apply movement
   entity.position = entity.position + entity.velocity * dt

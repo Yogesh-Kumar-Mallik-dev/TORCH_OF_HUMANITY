@@ -44,21 +44,27 @@ Config.title = {
 }
 
 -- =========================================
--- CHARACTER SETTINGS (TILE-BASED)
+-- CHARACTER SETTINGS
 -- =========================================
 Config.character = {
-    tiles_per_second = 6,      -- main control
+    tiles_per_second = 6,
+
     accel_time = 0.2,
     stop_time = 0.1,
+
+    dash_distance_tiles = 3,
+    dash_time = 0.15,
 
     original_size = 16,
     render_size = 16,
     scale = 1,
 
-    -- computed (do NOT touch manually)
+    -- computed
     max_speed = 0,
     acceleration = 0,
     friction = 0,
+    dash_distance = 0,
+    dash_speed = 0,
 }
 
 -- =========================================
@@ -87,19 +93,20 @@ function Config:applyPresets(preset)
     self.window.width = preset.width
     self.window.height = preset.height
 
-    -- Tile scaling
+    -- Tile
     self.tile.scale = preset.scale
     self.tile.render_size = self.tile.original_size * self.tile.scale
 
-    -- Title scaling
+    -- Title
     self.title.render_size = self.title.size * self.tile.scale
 
-    -- Character scaling
+    -- Character scale
     self.character.scale = preset.scale
-    self.character.render_size = self.character.original_size * self.character.scale
+    self.character.render_size =
+        self.character.original_size * self.character.scale
 
     -- =====================================
-    -- CHARACTER MOVEMENT (FIXED)
+    -- MOVEMENT (tile-based)
     -- =====================================
     self.character.max_speed =
         self.character.tiles_per_second * self.tile.render_size
@@ -110,7 +117,18 @@ function Config:applyPresets(preset)
     self.character.friction =
         self.character.max_speed / self.character.stop_time
 
-    -- World size (in tiles)
+    -- =====================================
+    -- DASH (distance-based)
+    -- =====================================
+    self.character.dash_distance =
+        self.character.dash_distance_tiles * self.tile.render_size
+
+    self.character.dash_speed =
+        self.character.dash_distance / self.character.dash_time
+
+    -- =====================================
+    -- WORLD
+    -- =====================================
     self.world.tile_width =
         math.floor(self.virtual.width / self.tile.render_size)
 
@@ -118,7 +136,7 @@ function Config:applyPresets(preset)
         math.floor(self.virtual.height / self.tile.render_size)
 end
 
--- Apply default
+-- Default preset
 Config:applyPresets(Config.presets.medium)
 
 return Config

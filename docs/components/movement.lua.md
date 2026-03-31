@@ -16,7 +16,7 @@ Movement component implementing directional movement, dash behavior, control-sta
 Initializes movement parameters from config:
 
 - `max_speed`, `acceleration`, `friction`
-- Dash parameters (`dash_speed`, `dash_time`, `dash_cooldown`)
+- Dash parameters (`dash_speed`, `dash_distance`, `dash_cooldown`)
 - Control flags (`stunned`, `frozen`) and knockback state
 - `facing_signal` for movement/facing state notifications
 
@@ -47,11 +47,12 @@ Per-frame update pipeline:
 - frozen/stunned: stop movement and emit state.
 - knockback: apply knockback velocity and facing.
 3. Handle dash cooldown and trigger (`dash` action).
-4. Execute dash or standard movement with acceleration/friction.
-5. Clamp non-dash velocity to max speed.
-6. Apply position integration.
-7. Update facing from velocity.
-8. Emit state and facing through `facing_signal`.
+4. Execute distance-based dash with cubic ease-out speed falloff.
+5. Execute standard movement with acceleration/friction when not dashing.
+6. Clamp non-dash velocity to max speed.
+7. Apply position integration.
+8. Update facing from velocity.
+9. Emit state and facing through `facing_signal`.
 
 ## Emitted States
 
@@ -66,3 +67,4 @@ Per-frame update pipeline:
 
 - Designed for tile-scaled movement values supplied by config.
 - Uses signal-based state emission to keep movement consumers decoupled.
+- Dash now completes by traveled distance instead of fixed timer duration.
