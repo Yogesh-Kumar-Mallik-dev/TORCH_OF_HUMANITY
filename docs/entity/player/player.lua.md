@@ -14,6 +14,7 @@ Player entity module that encapsulates player state, movement integration, and r
 - `velocity`: Vector2 current velocity
 - `facing`: Direction facing value (influences rendered direction indicator)
 - `state`: String state name updated via movement signal (e.g., "idle")
+- `config`: Movement/render configuration reference used for size-driven drawing
 - `movement`: Movement component instance that drives physics and facing changes
 
 ## Signal Integration
@@ -27,7 +28,7 @@ Player entity module that encapsulates player state, movement integration, and r
 Called each frame to update movement component with input and delta time.
 
 ### `Player:draw()`
-Renders the player as a 20×20 square, a direction indicator line, and debug text showing current state and facing name.
+Renders the player using config-driven size (`config.size` fallback 16), draws a scaled direction indicator line, and prints debug state/facing text relative to player size.
 
 ## Dependencies
 

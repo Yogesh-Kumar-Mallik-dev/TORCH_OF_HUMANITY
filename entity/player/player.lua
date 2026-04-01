@@ -16,11 +16,14 @@ function Player.new(x, y, movement_config)
   self.velocity = Vector2.new(0, 0)
 
   self.facing = Direction.facing.south
-  self.state  = "idle" -- 🔥 NEW
+  self.state  = "idle"
+
+  -- ✅ store config locally (important)
+  self.config = movement_config
 
   self.movement = Movement.new(movement_config)
 
-  --  CONNECT SIGNAL
+  -- connect signal
   self.movement.facing_signal:connect(self, self.on_facing_changed)
 
   return self
@@ -48,32 +51,36 @@ end
 -- ========================
 
 function Player:draw()
+  --  use config-driven size
+  local size = self.config.size or 16
+  local half = size / 2
+
   -- Body
   love.graphics.rectangle(
     "fill",
-    self.position.x - 10,
-    self.position.y - 10,
-    20,
-    20
+    self.position.x - half,
+    self.position.y - half,
+    size,
+    size
   )
 
   -- Facing direction
   local dir = Direction.vector(self.facing)
 
   if dir and not dir:is_zero() then
-  love.graphics.line(
-    self.position.x,
-    self.position.y,
-    self.position.x + dir.x * 20,
-    self.position.y + dir.y * 20
-  )
+    love.graphics.line(
+      self.position.x,
+      self.position.y,
+      self.position.x + dir.x * size,
+      self.position.y + dir.y * size
+    )
   end
 
-  --  DEBUG: show state + direction
+  -- Debug text
   love.graphics.print(
     self.state .. " | " .. Direction.name(self.facing),
-    self.position.x - 30,
-    self.position.y - 30
+    self.position.x - size,
+    self.position.y - size
   )
 end
 
