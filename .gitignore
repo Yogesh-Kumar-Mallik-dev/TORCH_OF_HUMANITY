@@ -1,0 +1,5 @@
+# Always ignore Tileset assets from commits.
+assets/Tileset/
+assets/Tileset/**
+**/Tileset/
+**/Tileset/**
