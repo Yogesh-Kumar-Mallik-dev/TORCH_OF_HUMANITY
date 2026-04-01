@@ -55,6 +55,9 @@ Config.character = {
     dash_distance_tiles = 3,
     dash_time = 0.15,
 
+    -- size in tiles (gameplay unit)
+    size_in_tiles = 1,
+
     original_size = 16,
     render_size = 16,
     scale = 1,
@@ -73,6 +76,13 @@ Config.character = {
 Config.world = {
     tile_width = 0,
     tile_height = 0,
+
+    -- chunk size (gameplay unit)
+    chunk_tiles_x = 32,
+    chunk_tiles_y = 18,
+
+    chunk_width = 0,
+    chunk_height = 0,
 }
 
 -- =========================================
@@ -103,7 +113,13 @@ function Config:applyPresets(preset)
     -- Character scale
     self.character.scale = preset.scale
     self.character.render_size =
-        self.character.original_size * self.character.scale
+    self.character.original_size * self.character.scale
+
+    -- =====================================
+    -- PLAYER SIZE (gameplay unit)
+    -- =====================================
+
+    self.character.size = self.character.size_in_tiles * self.tile.render_size
 
     -- =====================================
     -- MOVEMENT (tile-based)
@@ -134,6 +150,16 @@ function Config:applyPresets(preset)
 
     self.world.tile_height =
         math.floor(self.virtual.height / self.tile.render_size)
+
+    -- =====================================
+    -- CHUNK SIZE (World unit)
+    -- =====================================
+
+    self.world.chunk_width =
+        self.world.chunk_tiles_x * self.tile.render_size
+
+    self.world.chunk_height =
+        self.world.chunk_tiles_y * self.tile.render_size
 end
 
 -- Default preset

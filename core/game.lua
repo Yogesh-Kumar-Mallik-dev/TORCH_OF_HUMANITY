@@ -36,7 +36,7 @@ function Game:update(dt)
     self.map_manager:update(self.player)
 
     -- camera
-    self.camera:follow(self.player)
+    self.camera:follow(self.player, dt)
 
     self.input:update()
 end

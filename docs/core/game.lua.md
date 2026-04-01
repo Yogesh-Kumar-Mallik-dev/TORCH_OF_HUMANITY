@@ -15,7 +15,7 @@ used by main runtime callbacks.
 - Initializes camera system through `core.camera`.
 - Updates player simulation each frame with input and delta time.
 - Updates map loading window around player position through map manager.
-- Moves camera to follow player position each frame.
+- Moves camera with smooth dt-based follow each frame.
 - Draws world-space maps and player under camera transform.
 - Draws map-manager debug data in screen-space after camera is cleared.
 

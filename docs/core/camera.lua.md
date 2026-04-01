@@ -7,14 +7,15 @@ Minimal world camera utility that follows a target and applies/removes a world-t
 ## Current Behavior
 
 - Stores camera world position (`x`, `y`).
-- Follows a target by reading `target.position.x` and `target.position.y`.
+- Stores configurable smooth follow speed (`smooth_speed`).
+- Follows a target with dt-scaled interpolation toward `player.position`.
 - Applies transform by translating the world so camera center aligns to screen center.
 - Clears transform by restoring graphics stack.
 
 ## API
 
 - `Camera.new()`
-- `Camera:follow(target)`
+- `Camera:follow(player, dt)`
 - `Camera:apply()`
 - `Camera:clear()`
 
@@ -25,3 +26,4 @@ Minimal world camera utility that follows a target and applies/removes a world-t
 ## Notes
 
 - Intended for world-space drawing before UI/debug overlays.
+- Follow behavior is intentionally unclamped and uses screen center as anchor.

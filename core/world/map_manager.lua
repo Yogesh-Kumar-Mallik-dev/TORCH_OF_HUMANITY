@@ -1,3 +1,5 @@
+local Config = require("config")
+
 local MapManager = {}
 MapManager.__index = MapManager
 
@@ -7,22 +9,14 @@ function MapManager.new(database)
     self.database = database
     self.loaded = {}
 
-    self.map_w = 320
-    self.map_h = 180
+    self.map_w = Config.world.chunk_width
+    self.map_h = Config.world.chunk_height
 
     return self
 end
 
 -- =============================
--- Helper
--- =============================
-
-local function key(x, y)
-    return x .. "," .. y
-end
-
--- =============================
--- Find map from grid
+-- Find map by grid position
 -- =============================
 
 function MapManager:get_map_at(gx, gy)
@@ -31,6 +25,8 @@ function MapManager:get_map_at(gx, gy)
             return map
         end
     end
+
+    return nil -- no fallback (clean)
 end
 
 -- =============================
@@ -41,6 +37,7 @@ function MapManager:update(player)
     local px = player.position.x
     local py = player.position.y
 
+    -- 🔥 find current chunk
     local cx = math.floor(px / self.map_w)
     local cy = math.floor(py / self.map_h)
 
@@ -53,11 +50,12 @@ function MapManager:update(player)
 
             local map = self:get_map_at(gx, gy)
             if map then
-                local k = key(gx, gy)
-                needed[k] = true
+                local key = gx .. "," .. gy
 
-                if not self.loaded[k] then
-                    self.loaded[k] = {
+                needed[key] = true
+
+                if not self.loaded[key] then
+                    self.loaded[key] = {
                         data = map,
                         gx = gx,
                         gy = gy
@@ -67,16 +65,16 @@ function MapManager:update(player)
         end
     end
 
-    -- unload far maps
-    for k, _ in pairs(self.loaded) do
-        if not needed[k] then
-            self.loaded[k] = nil
+    -- 🔥 unload unused
+    for key, _ in pairs(self.loaded) do
+        if not needed[key] then
+            self.loaded[key] = nil
         end
     end
 end
 
 -- =============================
--- Draw ALL loaded maps
+-- Draw world
 -- =============================
 
 function MapManager:draw_world()
@@ -91,7 +89,10 @@ function MapManager:draw_world()
     love.graphics.setColor(1,1,1)
 end
 
+-- =============================
 -- Debug
+-- =============================
+
 function MapManager:draw()
     local y = 20
     love.graphics.print("Loaded maps:", 20, y)

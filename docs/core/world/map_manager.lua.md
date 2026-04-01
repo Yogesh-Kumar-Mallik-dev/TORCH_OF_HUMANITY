@@ -7,7 +7,7 @@ Runtime world streaming manager that loads and unloads map chunks around the pla
 ## Current Behavior
 
 - Stores map database and a loaded-map cache keyed by grid coordinates.
-- Uses fixed chunk dimensions (`map_w = 320`, `map_h = 180`) for world partitioning.
+- Uses config-driven chunk dimensions (`Config.world.chunk_width`, `Config.world.chunk_height`) for world partitioning.
 - Computes player's current grid cell from world position.
 - Loads a dynamic 3x3 set of maps centered on the player cell.
 - Unloads maps that leave the required 3x3 window.
@@ -26,3 +26,4 @@ Runtime world streaming manager that loads and unloads map chunks around the pla
 
 - Grid keys are encoded as `"x,y"` strings.
 - Database maps are discovered by matching `map.grid.x` and `map.grid.y`.
+- Missing grid lookups return `nil` explicitly (no fallback map behavior).
